@@ -72,6 +72,14 @@ class _UserFormState extends State<UserForm> {
                       return 'Campo obrigatório';
                     }
 
+                    if (value.trim().split(' ').length < 2) {
+                      return 'Obrigatório informar nome completo';
+                    }
+
+                    if (value.trim().length <= 8) {
+                      return 'O nome deve conter pelo menos 8 caracteres';
+                    }
+
                     return null;
                   },
                   onSaved: (value) => _formData['name'] = value.toString(),
@@ -79,11 +87,37 @@ class _UserFormState extends State<UserForm> {
                 TextFormField(
                   initialValue: _formData['email'],
                   decoration: const InputDecoration(labelText: 'E-mail'),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Campo obrigatório';
+                    }
+
+                    final emailValidator =
+                        RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+                    if (!emailValidator.hasMatch(value.trim())) {
+                      return 'E-mail inválido';
+                    }
+
+                    return null;
+                  },
                   onSaved: (value) => _formData['email'] = value.toString(),
                 ),
                 TextFormField(
                   initialValue: _formData['avatarUrl'],
                   decoration: const InputDecoration(labelText: 'URL do Avatar'),
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      final urlValidator = RegExp(
+                          r'^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$');
+
+                      if (!urlValidator.hasMatch(value.trim())) {
+                        return 'URL inválida';
+                      }
+                    }
+
+                    return null;
+                  },
                   onSaved: (value) => _formData['avatarUrl'] = value.toString(),
                 )
               ],
